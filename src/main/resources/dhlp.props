@@ -1,0 +1,34 @@
+#
+# Properties required by jedit
+#
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.name=Database Helper
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.author=Mark Simmons
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.version=${version}
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.docs=dhlp.html
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.depend.0=jedit 04.02.01.00
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.activate=defer
+
+#
+# Define the menu
+#
+plugin.net.contrapt.dhlp.jedit.DHLPlugin.menu=dhlp-reload dhlp-sql dhlp-plan dhlp-find dhlp-describe
+dhlp-reload.label=Reload Configuration
+dhlp-sql.label=Execute SQL (Buffer or Selection)
+dhlp-plan.label=Generate Query Plan (Buffer or Selection)
+dhlp-find.label=Find Objects
+dhlp-describe.label=Describe Object
+
+#
+# Labels and Messages for use in dialogs
+#
+plugin.dhlp.reinit-error.title=Reloading Configuration
+plugin.dhlp.reinit-error.message=Error reinitializing DHLP from {0}\n{1}
+
+plugin.dhlp.exec-sql-error.title=Executing SQL
+plugin.dhlp.exec-sql-error.message=Error executing SQL statement\n{0}
+
+#
+# Dockable properties
+#
+plugin.dhlp.results.title=Database
+plugin.dhlp.results.label=dhlp-results

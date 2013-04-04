@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE ACTIONS SYSTEM "actions.dtd">
+
+<ACTIONS>
+
+    <ACTION NAME="dhlp-reload">
+        <CODE>
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().reinit(view);
+        </CODE>
+    </ACTION>
+
+    <ACTION NAME="dhlp-sql">
+        <CODE>
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.SQL);
+        </CODE>
+    </ACTION>
+
+    <ACTION NAME="dhlp-plan">
+        <CODE>
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.PLAN);
+        </CODE>
+    </ACTION>
+
+    <ACTION NAME="dhlp-find">
+       <CODE>
+          net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.FIND);
+       </CODE>
+    </ACTION>
+
+    <ACTION NAME="dhlp-describe">
+        <CODE>
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.DESCRIBE);
+        </CODE>
+    </ACTION>
+
+</ACTIONS>

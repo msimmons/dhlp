@@ -1,0 +1,27 @@
++ Define drivers with their jar files in dhlp.xml and add the driver jar files to jedit classpath
++ Autocommit and fetch limit per connection (default global)
++ Close connections and tabs consistently
++ Connection pool managed by connection frame; taken and given back by JDBCTableModel
++ blocking when changing tabs -- solved by separate connections per sql panel
++ display byte[] results as hex string
++ Open cursors (make sure to close statements and result sets) -- maybe fixed
++ EXPLAIN PLAN (for oracle)
+
+- Add columns, constraints, indexes to tree view
+- Add popup menu actions to tree view
+
+- JDBC parameter substitution and parameter metadata
+- Export to csv in buffer including column headings
+- sqlserver: no default column name for selected literals or count(*) causes no data to be shown
+- implement fetch limit?
+- GUI for configuration (ie, editing dhlp.xml)
+- Schema Panel
+- Database (driver) specific functionality? (explain, special describes)
+- Template dhlp.xml for installation
+- Help docs
+- SQL completion (service oriented)
+
+COMPLETION
+- Parser to associate line# with in-scope symbols/types
+- Completion for procedures, packages, tables, table.columns via sql
+- Hook into SideKick (or project helper's completion module)

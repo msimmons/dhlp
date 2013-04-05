@@ -1,6 +1,7 @@
 package net.contrapt.dhlp.jedit;
 
 import net.contrapt.dhlp.model.ConnectionData;
+import org.apache.commons.lang.StringUtils;
 import org.gjt.sp.jedit.*;
 import org.gjt.sp.jedit.msg.*;
 import org.gjt.sp.util.Log;
@@ -286,12 +287,14 @@ public class DHLPlugin extends EBPlugin {
    * to choose it
    */
    private String getConnection(View view) throws DHLPException {
-      String connection = (String)DatabasePropertyProvider.getInstance().getProperty(CONNECTION_PROPERTY, view.getBuffer());
+      String connection = view.getBuffer().getStringProperty(CONNECTION_PROPERTY);
       Log.log(Log.DEBUG, this, "Found connection property: "+CONNECTION_PROPERTY+"="+connection);
-      if ( connection == null || "".equals(connection) ) {
+      if ( StringUtils.isEmpty(connection) ) {
          ConnectionData c = promptForConnection(view);
-         if ( c != null ) connection = c.getName();
-         else connection = null;
+         if ( c != null ) {
+            connection = c.getName();
+            view.getBuffer().setStringProperty(CONNECTION_PROPERTY, c.getName());
+         }
       }
       return connection;
    }

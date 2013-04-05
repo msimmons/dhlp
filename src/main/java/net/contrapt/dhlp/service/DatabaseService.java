@@ -7,6 +7,7 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.event.TreeExpansionEvent;
 import java.util.Map;
 
+import net.contrapt.dhlp.model.DriverData;
 import org.gjt.sp.jedit.PluginJAR;
 
 import net.contrapt.dhlp.common.*;
@@ -83,6 +84,9 @@ public class DatabaseService extends DefaultTreeModel implements InfoTreeService
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)getRoot();
       node.removeAllChildren();
       // Drivers
+      for ( DriverData driver : DHLPController.getInstance().getDrivers() ) {
+         drivers.add(new DriverNode(driver.getName()));
+      }
       node.add(drivers);
       // Connections
       for ( String name : DHLPController.getInstance().getConnections().keySet() ) {

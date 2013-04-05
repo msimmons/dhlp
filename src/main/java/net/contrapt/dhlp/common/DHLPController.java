@@ -202,6 +202,14 @@ public class DHLPController {
       }
       return jars;
    }
+
+   /**
+    * Return list of drivers
+    */
+   public Collection<DriverData> getDrivers() {
+      if ( dhlpData == null ) return Collections.EMPTY_LIST;
+      return dhlpData.getDrivers();
+   }
    
    /**
    * Add a new connection record

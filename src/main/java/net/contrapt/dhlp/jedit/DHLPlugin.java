@@ -1,6 +1,8 @@
 package net.contrapt.dhlp.jedit;
 
 import net.contrapt.dhlp.model.ConnectionData;
+import net.contrapt.jeditutil.selector.CompletionSelector;
+import net.contrapt.jeditutil.selector.ValueSelectionDialog;
 import org.apache.commons.lang.StringUtils;
 import org.gjt.sp.jedit.*;
 import org.gjt.sp.jedit.msg.*;
@@ -10,9 +12,7 @@ import java.io.*;
 import java.util.*;
 
 
-import net.contrapt.jeditutil.ValueSelectionDialog;
 import net.contrapt.jeditutil.InfoTreeService;
-import net.contrapt.jeditutil.CompletionSelector;
 
 import net.contrapt.dhlp.common.*;
 import net.contrapt.dhlp.gui.*;

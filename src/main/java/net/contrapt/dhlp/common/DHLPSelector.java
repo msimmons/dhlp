@@ -8,10 +8,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.KeyStroke;
 
 import net.contrapt.dhlp.model.ConnectionData;
+import net.contrapt.jeditutil.selector.ValueSelector;
 import org.gjt.sp.jedit.View;
 
-import net.contrapt.jeditutil.ValueSelector;
-import net.contrapt.jeditutil.CompletionSelector;
+import net.contrapt.jeditutil.selector.CompletionSelector;
 
 /**
 * Class that handles selecting various connection specific values

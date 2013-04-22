@@ -15,20 +15,19 @@ import net.contrapt.dhlp.common.*;
 */
 public class StatementPanel extends SQLPanel {
    
-   //
-   // PROPERTIES
-   //
    private StatementResultTableModel model;
    private String sql;
    
-   //
-   // CONSTRUCTORS
-   //
-
    public StatementPanel(DHLPConnectionPool pool, String sql) {
       this.sql = sql;
       model = new StatementResultTableModel(pool, sql);
       initialize();
+   }
+
+   public void reset(DHLPConnectionPool pool, String sql) {
+      this.sql = sql;
+      model = new StatementResultTableModel(pool, sql);
+      reinit();
    }
    
    //

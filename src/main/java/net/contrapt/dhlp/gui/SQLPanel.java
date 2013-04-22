@@ -14,11 +14,9 @@ import net.contrapt.dhlp.common.*;
 */
 public abstract class SQLPanel extends JPanel implements Runnable {
    
-   //
-   // PROPERTIES
-   //
    private int executionCount;
    private long executionTime;
+   private boolean pinned=false;
    
    private enum TaskEnum {
       NO_TASK,
@@ -35,20 +33,12 @@ public abstract class SQLPanel extends JPanel implements Runnable {
    private JPanel statusPanel;
    private JTextField statusText;
    
-   //
-   // CONSTRUCTORS
-   //
-
    protected SQLPanel() {
    }
-   
-   //
-   // OVERRIDES
-   //
-   
-   //
-   // PUBLIC METHODS
-   //
+
+   public boolean isPinned() {
+      return pinned;
+   }
    
    /**
    * Run the current task as a background process
@@ -146,6 +136,15 @@ public abstract class SQLPanel extends JPanel implements Runnable {
    protected void initialize() {
       layoutComponents();
    }
+
+   /**
+    * Reset the result panel
+    */
+   protected void reinit() {
+      doClose();
+      removeAll();
+      layoutComponents();
+   }
    
    /**
    * Create and layout components
@@ -155,11 +154,13 @@ public abstract class SQLPanel extends JPanel implements Runnable {
       resultPanel = new JScrollPane(getComponent());
       resultPanel.setAutoscrolls(true);
       // Create a panel to show status
-      statusText = new JTextField("", 30);
+      statusText = new JTextField("", 60);
       statusText.setEditable(false);
+      JCheckBox pinnedBox = new JCheckBox(PinnedAction);
       statusPanel = new JPanel();
-      statusPanel.setLayout(new GridLayout(1, 1));
-      statusPanel.add(statusText);
+      statusPanel.setLayout(new BorderLayout());
+      statusPanel.add(statusText, BorderLayout.WEST);
+      statusPanel.add(pinnedBox, BorderLayout.EAST);
       // Put them all together on the content pane
       setLayout(new BorderLayout());
       add(resultPanel, BorderLayout.CENTER);
@@ -266,7 +267,8 @@ public abstract class SQLPanel extends JPanel implements Runnable {
    */
    private void displayExecutionStatus() {
       double elapsed = executionTime/1000.00;
-      statusText.setText("Execution #"+executionCount+" ("+elapsed+"s): "+getModel().getAction());
+      statusText.setText("Execution #"+executionCount+" ("+elapsed+"s): "+getModel().getAction()+": "+getModel().getSql());
+      statusText.setToolTipText(getModel().getSql());
    }
    
    /**
@@ -292,9 +294,11 @@ public abstract class SQLPanel extends JPanel implements Runnable {
       taskThread.setPriority(Thread.NORM_PRIORITY);
       taskThread.start();
    }
-   
-   //
-   // STATIC METHODS
-   //
-   
+
+   private Action PinnedAction = new AbstractAction("Pin?") {
+      public void actionPerformed(ActionEvent e) {
+         pinned = !pinned;
+      }
+   };
+
 }

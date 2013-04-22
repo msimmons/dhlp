@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Stack;
 
-import net.contrapt.jeditutil.PluginPanel;
+import net.contrapt.jeditutil.pluginpanel.PluginPanel;
 import net.contrapt.dhlp.common.*;
 
 /**
@@ -61,9 +61,15 @@ public class ConnectionPanel extends PluginPanel {
    * Add a sql statement tab
    */
    public void addStatement(String sql) {
-      StatementPanel panel = new StatementPanel(pool, sql);
-      executionPanel.addTab("Statement"+(++statementCount), panel);
-      executionPanel.setSelectedComponent(panel);
+      SQLPanel current = (SQLPanel) executionPanel.getSelectedComponent();
+      if ( current == null || current.isPinned() || !(current instanceof StatementPanel) ) {
+         StatementPanel panel = new StatementPanel(pool, sql);
+         executionPanel.addTab("Statement"+(++statementCount), panel);
+         executionPanel.setSelectedComponent(panel);
+      }
+      else {
+         ((StatementPanel)current).reset(pool, sql);
+      }
    }
 
    /**

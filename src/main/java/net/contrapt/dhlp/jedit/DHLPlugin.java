@@ -12,7 +12,7 @@ import java.io.*;
 import java.util.*;
 
 
-import net.contrapt.jeditutil.InfoTreeService;
+import net.contrapt.jeditutil.service.InfoTreeService;
 
 import net.contrapt.dhlp.common.*;
 import net.contrapt.dhlp.gui.*;

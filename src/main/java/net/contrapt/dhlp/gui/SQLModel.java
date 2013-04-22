@@ -16,4 +16,5 @@ public interface SQLModel {
    public int getRowCount();
    public String getAction();
    public String getOperation();
+   public String getSql();
 }

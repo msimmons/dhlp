@@ -274,7 +274,12 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    public String getOperation() {
       return sql;
    }
-   
+
+   @Override
+   public String getSql() {
+      return sql;
+   }
+
    //
    // PRIVATE METHODS
    //

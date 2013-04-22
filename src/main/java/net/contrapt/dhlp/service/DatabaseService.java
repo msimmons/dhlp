@@ -13,7 +13,7 @@ import org.gjt.sp.jedit.PluginJAR;
 import net.contrapt.dhlp.common.*;
 import net.contrapt.dhlp.jedit.DHLPlugin;
 
-import net.contrapt.jeditutil.InfoTreeService;
+import net.contrapt.jeditutil.service.InfoTreeService;
 
 /**
 * Supply a tree model implementing the PHLP tab service for displaying database information

@@ -2,15 +2,11 @@
 <!DOCTYPE SERVICES SYSTEM "services.dtd">
 <SERVICES>
 
-    <SERVICE NAME="DatabaseService" CLASS="net.contrapt.jeditutil.InfoTreeService">
+    <SERVICE NAME="DatabaseService" CLASS="net.contrapt.jeditutil.service.InfoTreeService">
         net.contrapt.dhlp.jedit.DHLPlugin.getService();
     </SERVICE>
 
-    <SERVICE NAME="DatabasePropertyProvider" CLASS="net.contrapt.jeditutil.DynamicPropertyService">
-        net.contrapt.dhlp.jedit.DatabasePropertyProvider.getInstance();
-    </SERVICE>
-
-    <SERVICE NAME="DatabaseCompletionProvider" CLASS="net.contrapt.jeditutil.CompletionService">
+    <SERVICE NAME="DatabaseCompletionProvider" CLASS="net.contrapt.jeditutil.service.CompletionService">
         net.contrapt.dhlp.jedit.DatabaseCompletionProvider.getInstance();
     </SERVICE>
 

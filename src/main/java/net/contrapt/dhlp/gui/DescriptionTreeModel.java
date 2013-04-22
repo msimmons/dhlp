@@ -109,7 +109,12 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
    public String getOperation() {
       return "Describing "+object;
    }
-   
+
+   @Override
+   public String getSql() {
+      return object.getName();
+   }
+
    //
    // Implement tree will expand to have a dynamic tree
    //

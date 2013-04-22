@@ -63,6 +63,11 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    public String getAction() { return "query plan generated"; }
    public String getOperation() { return "generating query plan"; }
 
+   @Override
+   public String getSql() {
+      return sql;
+   }
+
    //
    // PRIVATE METHODS
    //

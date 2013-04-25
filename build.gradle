@@ -2,10 +2,12 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 ext {
+   releaseVersion="2.0.0"
+   snapshotVersion="$releaseVersion-SNAPSHOT"
 }
 
 group = "net.contrapt"
-version = "2.0.0"
+version = hasProperty("release") ? releaseVersion : snapshotVersion;
 
 repositories {
    mavenCentral()
@@ -23,7 +25,6 @@ dependencies {
 
 processResources {
    expand(project.properties)
-   exclude("icons/**")
 }
 
 test {
@@ -41,7 +42,7 @@ task guiTest(type: Test) {
    }
 }
 
-task deployPlugin(type:Copy, dependsOn: build) {
+task deployPlugin(type:Copy, dependsOn: build, description:"Copy the plugin jar to the local jedit installation as defined in your settings") {
    def jarFile="$buildDir/libs/${project.name}-${project.version}.jar"
    from(jarFile)
    into("$jeditUser/jars")

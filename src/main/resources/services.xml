@@ -10,4 +10,8 @@
         net.contrapt.dhlp.jedit.DatabaseCompletionProvider.getInstance();
     </SERVICE>
 
+   <SERVICE NAME="DatabaseStatusProvider" CLASS="net.contrapt.jeditutil.service.BufferStatusService">
+      net.contrapt.dhlp.gui.DatabaseStatusService.getInstance();
+   </SERVICE>
+
 </SERVICES>

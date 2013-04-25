@@ -289,13 +289,14 @@ public class DHLPlugin extends EBPlugin {
    private String getConnection(View view) throws DHLPException {
       String connection = view.getBuffer().getStringProperty(CONNECTION_PROPERTY);
       Log.log(Log.DEBUG, this, "Found connection property: "+CONNECTION_PROPERTY+"="+connection);
-      if ( StringUtils.isEmpty(connection) ) {
+      if ( StringUtils.isBlank(connection) ) {
          ConnectionData c = promptForConnection(view);
          if ( c != null ) {
             connection = c.getName();
             view.getBuffer().setStringProperty(CONNECTION_PROPERTY, c.getName());
          }
       }
+      DatabaseStatusService.getInstance().setConnection(connection);
       return connection;
    }
 

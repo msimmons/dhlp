@@ -8,131 +8,119 @@ import java.awt.event.*;
 import net.contrapt.dhlp.common.*;
 
 /**
-* This abstract class defines the actions expected for various types of SQL display panels as well
-* as a framework for running the potentially long running jdbc requests in separate threads.  Various
-* types of display panels can extend this class and be invoked by the connection panel
-*/
-public abstract class SQLPanel extends JPanel implements Runnable {
-   
+ * This abstract class defines the actions expected for various types of SQL display panels as well
+ * as a framework for running the potentially long running jdbc requests in separate threads.  Various
+ * types of display panels can extend this class and be invoked by the connection panel
+ */
+public abstract class SQLPanel extends JPanel {
+
    private int executionCount;
    private long executionTime;
-   private boolean pinned=false;
-   
-   private enum TaskEnum {
-      NO_TASK,
-      EXECUTE,
-      FETCH,
-      CANCEL,
-      CLOSE,
-      COMMIT,
-      ROLLBACK
-   };
-   private TaskEnum task;
-   
+   private boolean pinned = false;
+
    private JScrollPane resultPanel;
    private JPanel statusPanel;
    private JTextField statusText;
-   
+
    protected SQLPanel() {
    }
 
    public boolean isPinned() {
       return pinned;
    }
-   
+
    /**
-   * Run the current task as a background process
-   */
-   public final void run() {
-      try {
-         switch ( task ) {
-            case EXECUTE:
-               doExecute();
-               break;
-            case FETCH:
-               doFetch();
-               break;
-            case CANCEL:
-               doCancel();
-               break;
-            case CLOSE:
-               doClose();
-               break;
-            case COMMIT:
-               doCommit();
-               break;
-            case ROLLBACK:
-               doRollback();
-               break;
-         }
-         task = TaskEnum.NO_TASK;
-      }
-      catch (Exception e) {
-         statusText.setText("Error performaing SQL task: "+e);
-         e.printStackTrace();
-      }
-   }
-   
-   /**
-   * Setup and spawn task to execute the sql statement
-   */
+    * Setup and spawn task to execute the sql statement
+    */
    public final void execute() {
-      startTaskThread(TaskEnum.EXECUTE);
+      startTaskThread(
+            new Runnable() {
+               @Override
+               public void run() {
+                  doExecute();
+               }
+            }, "execute");
    }
-   
+
    /**
-   * Setup and spawn task to fetch rows
-   */
+    * Setup and spawn task to fetch rows
+    */
    public final void fetch() {
-      startTaskThread(TaskEnum.FETCH);
+      startTaskThread(
+            new Runnable() {
+               @Override
+               public void run() {
+                  doFetch();
+               }
+            }, "fetch");
    }
-   
+
    /**
-   * Cancel the currently running sql statement
-   */
+    * Cancel the currently running sql statement
+    */
    public final void cancel() {
-      startTaskThread(TaskEnum.CANCEL);
+      startTaskThread(
+            new Runnable() {
+               @Override
+               public void run() {
+                  doCancel();
+               }
+            }, "cancel");
    }
-   
+
    /**
-   * Commit the current connection
-   */
+    * Commit the current connection
+    */
    public final void commit() {
-      startTaskThread(TaskEnum.COMMIT);
+      startTaskThread(
+            new Runnable() {
+               @Override
+               public void run() {
+                  doCommit();
+               }
+            }, "commit");
    }
 
    /**
-   * Rollback the current connection
-   */
+    * Rollback the current connection
+    */
    public final void rollback() {
-      startTaskThread(TaskEnum.ROLLBACK);
-   }
-   
-   /**
-   * Close this panel
-   */
-   public final void close() {
-      startTaskThread(TaskEnum.CLOSE);
+      startTaskThread(
+            new Runnable() {
+               @Override
+               public void run() {
+                  doRollback();
+               }
+            }, "rollback");
    }
 
    /**
-   * Implement this method to return SQLModel which implements the various operations called by 
-   * the actions
-   */
+    * Close this panel
+    */
+   public final void close() {
+      startTaskThread(
+            new Runnable() {
+               @Override
+               public void run() {
+                  doClose();
+               }
+            }, "close");
+   }
+
+   /**
+    * Implement this method to return SQLModel which implements the various operations called by
+    * the actions
+    */
    public abstract SQLModel getModel();
 
    /**
-   * Implement this method to return a component to display in the result panel
-   */
+    * Implement this method to return a component to display in the result panel
+    */
    public abstract JComponent getComponent();
 
-   //
-   // PRIVATE METHODS
-   //
-
    /**
-   * Initialize variables and layout
-   */
+    * Initialize variables and layout
+    */
    protected void initialize() {
       layoutComponents();
    }
@@ -145,10 +133,10 @@ public abstract class SQLPanel extends JPanel implements Runnable {
       removeAll();
       layoutComponents();
    }
-   
+
    /**
-   * Create and layout components
-   */
+    * Create and layout components
+    */
    private void layoutComponents() {
       // Create a scrolling panel for the sql results
       resultPanel = new JScrollPane(getComponent());
@@ -166,10 +154,10 @@ public abstract class SQLPanel extends JPanel implements Runnable {
       add(resultPanel, BorderLayout.CENTER);
       add(statusPanel, BorderLayout.SOUTH);
    }
-   
+
    /**
-   * Excecute the sql statement and fetch the rows
-   */
+    * Excecute the sql statement and fetch the rows
+    */
    private void doExecute() {
       try {
          statusText.setText("Executing...");
@@ -179,104 +167,98 @@ public abstract class SQLPanel extends JPanel implements Runnable {
          executionCount++;
          displayExecutionStatus();
          doFetch();
-      }
-      catch(SQLException e) {
+      } catch (SQLException e) {
          statusText.setText("Error executing statement");
          displayError(e);
       }
    }
-   
+
    /**
-   * Fetch rows 
-   */
+    * Fetch rows
+    */
    private void doFetch() {
       try {
          statusText.setText("Fetching...");
          getModel().fetch();
          displayExecutionStatus();
-      }
-      catch(SQLException e) {
-         statusText.setText("Error fetching rows: "+e);
+      } catch (SQLException e) {
+         statusText.setText("Error fetching rows: " + e);
          //displayError(e);
       }
    }
-   
+
    /**
-   * Cancel the currently executing sql statement
-   */
+    * Cancel the currently executing sql statement
+    */
    private void doCancel() {
       try {
          statusText.setText("Cancelling...");
          getModel().cancel();
          statusText.setText("Cancelled");
-      }
-      catch(SQLException e) {
+      } catch (SQLException e) {
          statusText.setText("Error cancelling statement");
          displayError(e);
       }
    }
-   
+
    /**
-   * Do what's necessary when panel is closed
-   */
+    * Do what's necessary when panel is closed
+    */
    private void doClose() {
       try {
          statusText.setText("Closing...");
-         getModel().close(); 
+         getModel().close();
          statusText.setText("Closed");
-      }
-      catch (SQLException e) { 
+      } catch (SQLException e) {
          statusText.setText("Error closing model");
          displayError(e);
-         System.err.println(getClass()+".doClose(): "+e); 
+         System.err.println(getClass() + ".doClose(): " + e);
       }
    }
 
    /**
-   * Commit the model transaction
-   */
+    * Commit the model transaction
+    */
    private void doCommit() {
       try {
          statusText.setText("Committing...");
-         getModel().commit(); 
+         getModel().commit();
          statusText.setText("Committed");
-      }
-      catch (SQLException e) { 
+      } catch (SQLException e) {
          statusText.setText("Error committing transaction");
          displayError(e);
       }
    }
 
    /**
-   * Rollback the model transaction
-   */
+    * Rollback the model transaction
+    */
    private void doRollback() {
       try {
          statusText.setText("Rolling back...");
-         getModel().rollback(); 
+         getModel().rollback();
          statusText.setText("Rolled back");
-      }
-      catch (SQLException e) { 
+      } catch (SQLException e) {
          statusText.setText("Error rolling back transaction");
          displayError(e);
       }
    }
 
-  /**
-   * Display the query execution statistics in the status bar
-   */
+   /**
+    * Display the query execution statistics in the status bar
+    */
    private void displayExecutionStatus() {
-      double elapsed = executionTime/1000.00;
-      statusText.setText("Execution #"+executionCount+" ("+elapsed+"s): "+getModel().getAction()+": "+getModel().getSql());
+      double elapsed = executionTime / 1000.00;
+      statusText.setText("Execution #" + executionCount + " (" + elapsed + "s): " + getModel().getAction() + ": " + getModel().getSql());
       statusText.setToolTipText(getModel().getSql());
    }
-   
+
    /**
-   * Display an execution error
-   */
+    * Display an execution error
+    */
    private void displayError(SQLException e) {
       remove(resultPanel);
-      JTextArea error = new JTextArea("Error:\n"+e.getMessage()+"\n"+e.getNextException()+"\n\nOperation:\n"+getModel().getOperation());
+      JTextArea error = new JTextArea(getExceptionString(e)+ "\n\nOperation:\n" + getModel().getOperation());
       JScrollPane pane = new JScrollPane(error);
       pane.setAutoscrolls(true);
       error.setEditable(false);
@@ -284,12 +266,22 @@ public abstract class SQLPanel extends JPanel implements Runnable {
       revalidate();
    }
 
+   private String getExceptionString(SQLException e) {
+      StringBuilder msg = new StringBuilder("SQLException: "+e.getMessage());
+      if ( e.getNextException() != null ) msg.append("\n   "+e.getNextException());
+      Throwable c = e.getCause();
+      while ( c != null ) {
+         msg.append("\n      "+c);
+         c = c.getCause();
+      }
+      return msg.toString();
+   }
+
    /**
-   * Start a thread to execute the given sql task
-   */
-   private void startTaskThread(TaskEnum task) {
-      this.task = task; 
-      Thread taskThread = new Thread(this, getClass().getName()+"."+task.name());
+    * Start a thread to execute the given sql task
+    */
+   private void startTaskThread(Runnable task, String name) {
+      Thread taskThread = new Thread(task, getClass().getSimpleName() + "." + name);
       taskThread.setDaemon(true);
       taskThread.setPriority(Thread.NORM_PRIORITY);
       taskThread.start();

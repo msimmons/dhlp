@@ -1,7 +1,6 @@
-package net.contrapt.dhlp.gui;
+package net.contrapt.dhlp.jedit;
 
 import net.contrapt.dhlp.common.DHLPController;
-import net.contrapt.dhlp.jedit.DHLPlugin;
 import net.contrapt.jeditutil.service.BufferStatusService;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.PluginJAR;

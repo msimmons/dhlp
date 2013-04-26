@@ -176,7 +176,13 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    public void rollback() throws SQLException {
       if ( connection != null ) connection.rollback();
    }
-   
+
+   /**
+    * Export the data as CSV
+    */
+   public void export() {
+   }
+
    /**
    * Close resources used by this model
    */

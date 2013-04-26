@@ -16,17 +16,10 @@ import net.contrapt.dhlp.common.*;
 */
 public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, TreeWillExpandListener {
    
-   //
-   // PROPERTIES
-   //
    private JDBCObject object;
    private DHLPConnectionPool pool;
    private JTree tree;
 
-   //
-   // CONSTRUCTORS
-   //
-   
    /**
    * Constructor to use connection pool
    */
@@ -36,10 +29,6 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
       this.object = object;
       this.pool = pool;
    }
-   
-   //
-   // PUBLIC METHODS
-   //
    
    /**
    * Excecute the sql statement for this table model
@@ -75,7 +64,10 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
    public void rollback() throws SQLException {
       // noop
    }
-   
+
+   public void export() {
+   }
+
    /**
    * Close resources used by this model
    */
@@ -83,10 +75,6 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
       cancel();
    }
    
-   //
-   // OVERRIDES/IMPLEMENTS
-   //
-
    public int getRowCount() {
       return 1;
    }
@@ -125,9 +113,6 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
       Object node = e.getPath().getLastPathComponent();
    }
 
-   //
-   // PRIVATE METHODS
-   //
    /**
    * Initialize members
    */
@@ -244,9 +229,5 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
          pool.returnConnection(db);
       }
    }
-
-   //
-   // STATIC
-   //
 
 }

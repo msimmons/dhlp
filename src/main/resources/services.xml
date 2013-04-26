@@ -11,7 +11,7 @@
     </SERVICE>
 
    <SERVICE NAME="DatabaseStatusProvider" CLASS="net.contrapt.jeditutil.service.BufferStatusService">
-      net.contrapt.dhlp.gui.DatabaseStatusService.getInstance();
+      net.contrapt.dhlp.jedit.DatabaseStatusService.getInstance();
    </SERVICE>
 
 </SERVICES>

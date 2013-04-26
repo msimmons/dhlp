@@ -16,17 +16,10 @@ import net.contrapt.dhlp.common.*;
 */
 public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    
-   //
-   // PROPERTIES
-   //
    private String sql;
    private DHLPConnectionPool pool;
    private JTree tree;
 
-   //
-   // CONSTRUCTORS
-   //
-   
    /**
    * Constructor to use connection pool
    */
@@ -36,14 +29,6 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
       this.sql = sql;
       this.pool = pool;
    }
-
-   //
-   // PUBLIC METHODS
-   //
-
-   //
-   // OVERRIDES/IMPLEMENTS
-   //
 
    /**
    * Return the tree component
@@ -59,6 +44,8 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    public void close() throws SQLException {}
    public void commit() throws SQLException {}
    public void rollback() throws SQLException {}
+   public void export() {}
+
    public int getRowCount() { return 1; }
    public String getAction() { return "query plan generated"; }
    public String getOperation() { return "generating query plan"; }
@@ -68,9 +55,6 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
       return sql;
    }
 
-   //
-   // PRIVATE METHODS
-   //
    /**
    * Initialize members
    */
@@ -120,7 +104,6 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
       
    }
 
-
    /**
    * A node in the query plan tree
    */
@@ -161,9 +144,5 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
       }
 
    }
-
-   //
-   // STATIC
-   //
 
 }

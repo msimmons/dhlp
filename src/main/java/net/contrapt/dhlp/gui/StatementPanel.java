@@ -30,14 +30,6 @@ public class StatementPanel extends SQLPanel {
       reinit();
    }
    
-   //
-   // OVERRIDES
-   //
-   
-   //
-   // PUBLIC METHODS
-   //
-
    @Override
    public SQLModel getModel() {
       return model;

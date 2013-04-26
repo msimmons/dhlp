@@ -10,13 +10,10 @@ import net.contrapt.jeditutil.pluginpanel.PluginPanel;
 import net.contrapt.dhlp.common.*;
 
 /**
-* A frame which shows one or more statement result panels for the same connection
+* A frame which shows one or more statement result panels for the SAME connection
 */
 public class ConnectionPanel extends PluginPanel {
    
-   //
-   // PROPERTIES
-   //
    private String name;
    private DHLPConnectionPool pool;
    private int statementCount;
@@ -28,22 +25,11 @@ public class ConnectionPanel extends PluginPanel {
    private JTextField infoText;
    private Component defaultFocusComponent;
    
-   //
-   // CONSTRUCTORS
-   //
    public ConnectionPanel(DHLPConnectionPool pool) {
       super();
       this.pool = pool;
       initialize();
    }
-   
-   //
-   // OVERRIDES
-   //
-   
-   //
-   // PUBLIC METHODS
-   //
    
    /**
    * Return the connection name
@@ -141,6 +127,15 @@ public class ConnectionPanel extends PluginPanel {
       if ( panel == null ) return;
       panel.rollback();
    }
+
+   /**
+    * Export the query data as csv values
+    */
+   public void export() {
+      SQLPanel panel = (SQLPanel)executionPanel.getSelectedComponent();
+      if ( panel == null ) return;
+      //panel.export();
+   }
    
    /**
    * Close all statement panels
@@ -154,10 +149,6 @@ public class ConnectionPanel extends PluginPanel {
       removePluginPanel();
    }
    
-   //
-   // PRIVATE METHODS
-   //
-
    /**
    * Initialize variables and layout
    */
@@ -175,6 +166,8 @@ public class ConnectionPanel extends PluginPanel {
       toolBar.setFloatable(false);
       toolBar.setRollover(true);
       toolBar.addSeparator();
+      (toolBar.add(ExportAction)).setMnemonic(KeyEvent.VK_E);
+      toolBar.addSeparator();
       (toolBar.add(ExecuteAction)).setMnemonic(KeyEvent.VK_X);
       (toolBar.add(CommitAction)).setMnemonic(KeyEvent.VK_T);
       (toolBar.add(RollbackAction)).setMnemonic(KeyEvent.VK_R);
@@ -187,10 +180,7 @@ public class ConnectionPanel extends PluginPanel {
          if ( c == null ) break;
          c.setFont(c.getFont().deriveFont(10.0f));
       }
-      // Create the follow buffer checkbox
-//      followBufferCheck = new JCheckBox("Follow Buffer", showWithBuffer());
-//      followBufferCheck.setFont(followBufferCheck.getFont().deriveFont(10.0f));
-      defaultFocusComponent = followBufferCheck;
+      defaultFocusComponent = toolBar;
       // Create the tabbed pane; that's it i guess
       executionPanel = new JTabbedPane();
       // Create the status components
@@ -287,8 +277,10 @@ public class ConnectionPanel extends PluginPanel {
       }
    };
 
-   //
-   // STATIC METHODS
-   //
-   
+   private Action ExportAction = new AbstractAction("Export") {
+      public void actionPerformed(ActionEvent e) {
+         export();
+      }
+   };
+
 }

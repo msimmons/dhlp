@@ -3,6 +3,8 @@ package net.contrapt.dhlp.model;
 import net.contrapt.jeditutil.model.BaseModel;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.List;
+
 public class ConnectionData extends BaseModel {
 
    @JsonProperty
@@ -27,14 +29,7 @@ public class ConnectionData extends BaseModel {
    private int fetchLimit;
 
    @JsonProperty
-   private String catalog;
-
-   @JsonProperty
-   private String schema;
-
-   public String getCatalog() {
-      return catalog;
-   }
+   private List<String> schema;
 
    public String getDriver() {
       return driver;
@@ -52,7 +47,7 @@ public class ConnectionData extends BaseModel {
       return password;
    }
 
-   public String getSchema() {
+   public List<String> getSchema() {
       return schema;
    }
 

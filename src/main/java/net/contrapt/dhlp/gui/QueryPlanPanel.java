@@ -1,11 +1,8 @@
 package net.contrapt.dhlp.gui;
 
-import java.sql.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import net.contrapt.dhlp.common.ConnectionPool;
 
-import net.contrapt.dhlp.common.*;
+import javax.swing.*;
 
 /**
 * A panel which shows an object description
@@ -22,7 +19,7 @@ public class QueryPlanPanel extends SQLPanel {
    // CONSTRUCTORS
    //
 
-   public QueryPlanPanel(DHLPConnectionPool pool, String sql) {
+   public QueryPlanPanel(ConnectionPool pool, String sql) {
       this.sql = sql;
       model = new QueryPlanTreeModel(pool, sql);
       initialize();

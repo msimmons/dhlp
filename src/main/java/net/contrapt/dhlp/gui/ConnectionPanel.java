@@ -1,15 +1,9 @@
 package net.contrapt.dhlp.gui;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Stack;
 
-import net.contrapt.dhlp.jedit.DHLPlugin;
 import net.contrapt.jeditutil.pluginpanel.PluginPanel;
 import net.contrapt.dhlp.common.*;
 
@@ -19,7 +13,7 @@ import net.contrapt.dhlp.common.*;
 public class ConnectionPanel extends PluginPanel {
    
    private String name;
-   private DHLPConnectionPool pool;
+   private ConnectionPool pool;
    private int statementCount;
    
    private JToolBar toolBar;
@@ -29,7 +23,7 @@ public class ConnectionPanel extends PluginPanel {
    private JTextField infoText;
    private Component defaultFocusComponent;
    
-   public ConnectionPanel(DHLPConnectionPool pool) {
+   public ConnectionPanel(ConnectionPool pool) {
       super();
       this.pool = pool;
       initialize();
@@ -45,7 +39,7 @@ public class ConnectionPanel extends PluginPanel {
    /**
    * Return the connection pool
    */
-   public DHLPConnectionPool getPool() { return this.pool; }
+   public ConnectionPool getPool() { return this.pool; }
 
    /**
    * Add a sql statement tab

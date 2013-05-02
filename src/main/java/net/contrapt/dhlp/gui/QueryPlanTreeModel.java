@@ -1,16 +1,12 @@
 package net.contrapt.dhlp.gui;
 
+import net.contrapt.dhlp.common.ConnectionPool;
+
 import javax.swing.tree.*;
 import java.io.BufferedWriter;
 import java.sql.*;
 import java.util.*;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Dimension;
 import javax.swing.*;
-import javax.swing.event.TreeWillExpandListener;
-import javax.swing.event.TreeExpansionEvent;
-import net.contrapt.dhlp.common.*;
 
 /**
 * Execute a query plan and display as a tree
@@ -18,13 +14,13 @@ import net.contrapt.dhlp.common.*;
 public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    
    private String sql;
-   private DHLPConnectionPool pool;
+   private ConnectionPool pool;
    private JTree tree;
 
    /**
    * Constructor to use connection pool
    */
-   public QueryPlanTreeModel(DHLPConnectionPool pool, String sql) {
+   public QueryPlanTreeModel(ConnectionPool pool, String sql) {
       super(null);
       initialize();
       this.sql = sql;

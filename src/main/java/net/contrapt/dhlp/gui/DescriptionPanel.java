@@ -1,9 +1,6 @@
 package net.contrapt.dhlp.gui;
 
-import java.sql.*;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 import net.contrapt.dhlp.common.*;
 
@@ -22,7 +19,7 @@ public class DescriptionPanel extends SQLPanel {
    // CONSTRUCTORS
    //
 
-   public DescriptionPanel(DHLPConnectionPool pool, JDBCObject object) {
+   public DescriptionPanel(ConnectionPool pool, JDBCObject object) {
       this.object = object;
       model = new DescriptionTreeModel(pool, object);
       initialize();

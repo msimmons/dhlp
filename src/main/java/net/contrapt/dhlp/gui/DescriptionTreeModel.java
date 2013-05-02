@@ -3,10 +3,6 @@ package net.contrapt.dhlp.gui;
 import javax.swing.tree.*;
 import java.io.BufferedWriter;
 import java.sql.*;
-import java.util.*;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Dimension;
 import javax.swing.*;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.event.TreeExpansionEvent;
@@ -18,13 +14,13 @@ import net.contrapt.dhlp.common.*;
 public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, TreeWillExpandListener {
    
    private JDBCObject object;
-   private DHLPConnectionPool pool;
+   private ConnectionPool pool;
    private JTree tree;
 
    /**
    * Constructor to use connection pool
    */
-   public DescriptionTreeModel(DHLPConnectionPool pool, JDBCObject object) {
+   public DescriptionTreeModel(ConnectionPool pool, JDBCObject object) {
       super(new DefaultMutableTreeNode(object, true));
       initialize();
       this.object = object;

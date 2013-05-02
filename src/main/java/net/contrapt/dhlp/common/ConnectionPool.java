@@ -1,6 +1,7 @@
 package net.contrapt.dhlp.common;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Stack;
 
 import net.contrapt.dhlp.model.ConnectionData;
@@ -10,7 +11,7 @@ import net.contrapt.dhlp.model.DriverData;
 /**
 * A frame which shows one or more statement result panels for the same connection
 */
-public class ConnectionPool implements DHLPConnectionPool {
+public class ConnectionPool {
 
    //
    // PROPERTIES
@@ -29,9 +30,6 @@ public class ConnectionPool implements DHLPConnectionPool {
       this.connections = new Stack<Connection>();
    }
 
-   //+++++++++++++++++++++++++++++
-   // IMPLEMENT: DHLPConnectionPool
-   //+++++++++++++++++++++++++++++
    public Connection takeConnection() {
       Connection connection = null;
       if ( !connections.empty() ) {
@@ -57,9 +55,9 @@ public class ConnectionPool implements DHLPConnectionPool {
    
    public String getUser() { return connectionData.getUser(); }
    
-   public String getSchema() { return connectionData.getSchema(); }
+   public List<String> getSchema() { return connectionData.getSchema(); }
 
-   public String getCatalog() { return connectionData.getCatalog(); }
+   public int getFetchLimit() { return connectionData.getFetchLimit(); }
 
    public void close() {
       // Close all connections in the pool

@@ -1,5 +1,7 @@
 package net.contrapt.dhlp.gui;
 
+import net.contrapt.dhlp.common.ConnectionPool;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.Math;
@@ -8,8 +10,6 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
-
-import net.contrapt.dhlp.common.*;
 
 /**
  * Execute a sql statement and model the result set as a table.
@@ -21,7 +21,7 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    //
    private String sql;
    private Connection connection;
-   private DHLPConnectionPool pool;
+   private ConnectionPool pool;
    private PreparedStatement statement;
    private ResultSet results;
    private ArrayList<Object[]> rows;
@@ -50,7 +50,7 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    /**
     * Constructor to use connection pool
     */
-   public StatementResultTableModel(DHLPConnectionPool pool, String sql) {
+   public StatementResultTableModel(ConnectionPool pool, String sql) {
       initialize();
       this.sql = sql;
       this.pool = pool;
@@ -77,7 +77,7 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    /**
     * Set the connection pool
     */
-   public void setPool(DHLPConnectionPool pool) {
+   public void setPool(ConnectionPool pool) {
       this.pool = pool;
    }
 

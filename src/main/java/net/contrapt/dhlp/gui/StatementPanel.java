@@ -1,11 +1,8 @@
 package net.contrapt.dhlp.gui;
 
-import java.sql.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import net.contrapt.dhlp.common.ConnectionPool;
 
-import net.contrapt.dhlp.common.*;
+import javax.swing.*;
 
 /**
 * A panel which shows results from a sql statement in a table, the text of the sql statement in a text area and
@@ -18,13 +15,13 @@ public class StatementPanel extends SQLPanel {
    private StatementResultTableModel model;
    private String sql;
    
-   public StatementPanel(DHLPConnectionPool pool, String sql) {
+   public StatementPanel(ConnectionPool pool, String sql) {
       this.sql = sql;
       model = new StatementResultTableModel(pool, sql);
       initialize();
    }
 
-   public void reset(DHLPConnectionPool pool, String sql) {
+   public void reset(ConnectionPool pool, String sql) {
       this.sql = sql;
       model = new StatementResultTableModel(pool, sql);
       reinit();

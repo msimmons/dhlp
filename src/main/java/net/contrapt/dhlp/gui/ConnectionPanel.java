@@ -1,11 +1,15 @@
 package net.contrapt.dhlp.gui;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Stack;
 
+import net.contrapt.dhlp.jedit.DHLPlugin;
 import net.contrapt.jeditutil.pluginpanel.PluginPanel;
 import net.contrapt.dhlp.common.*;
 
@@ -134,7 +138,7 @@ public class ConnectionPanel extends PluginPanel {
    public void export() {
       SQLPanel panel = (SQLPanel)executionPanel.getSelectedComponent();
       if ( panel == null ) return;
-      //panel.export();
+      panel.export();
    }
    
    /**

@@ -1,6 +1,7 @@
 package net.contrapt.dhlp.gui;
 
 import javax.swing.tree.*;
+import java.io.BufferedWriter;
 import java.sql.*;
 import java.util.*;
 import java.awt.BorderLayout;
@@ -65,7 +66,7 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
       // noop
    }
 
-   public void export() {
+   public void export(BufferedWriter out) {
    }
 
    /**

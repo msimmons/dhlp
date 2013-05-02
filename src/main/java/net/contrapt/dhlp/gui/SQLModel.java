@@ -1,5 +1,6 @@
 package net.contrapt.dhlp.gui;
 
+import java.io.BufferedWriter;
 import java.sql.SQLException;
 
 /**
@@ -13,7 +14,7 @@ public interface SQLModel {
    public void close() throws SQLException;
    public void commit() throws SQLException;
    public void rollback() throws SQLException;
-   public void export();
+   public void export(BufferedWriter out);
    public int getRowCount();
    public String getAction();
    public String getOperation();

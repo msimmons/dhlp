@@ -1,11 +1,15 @@
 package net.contrapt.dhlp.gui;
 
+import java.io.BufferedWriter;
+import java.io.StringWriter;
 import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 import net.contrapt.dhlp.common.*;
+import net.contrapt.dhlp.jedit.DHLPlugin;
+import org.gjt.sp.jedit.GUIUtilities;
 
 /**
  * This abstract class defines the actions expected for various types of SQL display panels as well
@@ -105,6 +109,13 @@ public abstract class SQLPanel extends JPanel {
                   doClose();
                }
             }, "close");
+   }
+
+   /**
+    * Export the data in the panel
+    */
+   public final void export() {
+      doExport();
    }
 
    /**
@@ -241,6 +252,21 @@ public abstract class SQLPanel extends JPanel {
       } catch (SQLException e) {
          statusText.setText("Error rolling back transaction");
          displayError(e);
+      }
+   }
+
+   /**
+    * Export the data for the model
+    */
+   private void doExport() {
+      try {
+         StringWriter buf = new StringWriter();
+         BufferedWriter out = new BufferedWriter(buf);
+         getModel().export(out);
+         out.close();
+         DHLPlugin.getInstance().createBuffer(buf.toString());
+      } catch (Exception e) {
+         statusText.setText("Error exporting data: " + e.getMessage());
       }
    }
 

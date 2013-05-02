@@ -235,6 +235,11 @@ public class DHLPlugin extends EBPlugin {
       panel.addQueryPlan(sql);
       panel.execute();
    }
+
+   public void createBuffer(String contents) {
+      Buffer buf = jEdit.newFile(jEdit.getActiveView());
+      buf.insert(0, contents);
+   }
    
    /**
    * Describe the chosen database object

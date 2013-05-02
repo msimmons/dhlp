@@ -1,6 +1,7 @@
 package net.contrapt.dhlp.gui;
 
 import javax.swing.tree.*;
+import java.io.BufferedWriter;
 import java.sql.*;
 import java.util.*;
 import java.awt.BorderLayout;
@@ -44,7 +45,7 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    public void close() throws SQLException {}
    public void commit() throws SQLException {}
    public void rollback() throws SQLException {}
-   public void export() {}
+   public void export(BufferedWriter out) {}
 
    public int getRowCount() { return 1; }
    public String getAction() { return "query plan generated"; }

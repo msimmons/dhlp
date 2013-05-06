@@ -84,26 +84,31 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    /**
     * Excecute the sql statement for this table model
     */
-   public void execute() throws SQLException {
+   public void execute() {
       if (sql == null) return;
-      if (connection == null) connection = pool.takeConnection();
-      if (statement == null) statement = connection.prepareStatement(sql);
-      if (rows == null) rows = new ArrayList<Object[]>();
-      else {
-         rows.clear();
-         updateCount = -1;
-         fireTableDataChanged();
-      }
-      executing = true;
-      statement.execute();
-      updateCount = statement.getUpdateCount();
-      if (results != null) results.close();
-      results = statement.getResultSet();
-      executing = false;
-      if (table.getColumnModel().getColumnCount() == 0) {
-         table.setAutoCreateColumnsFromModel(true);
-         fireTableStructureChanged();
-         setColumnAttributes();
+      connection = connection == null ? pool.takeConnection() : connection;
+      if (connection == null) throw new IllegalStateException("Error getting connect for " + pool.getURL());
+      try {
+         if (statement == null) statement = connection.prepareStatement(sql);
+         if (rows == null) rows = new ArrayList<Object[]>();
+         else {
+            rows.clear();
+            updateCount = -1;
+            fireTableDataChanged();
+         }
+         executing = true;
+         statement.execute();
+         updateCount = statement.getUpdateCount();
+         if (results != null) results.close();
+         results = statement.getResultSet();
+         executing = false;
+         if (table.getColumnModel().getColumnCount() == 0) {
+            table.setAutoCreateColumnsFromModel(true);
+            fireTableStructureChanged();
+            setColumnAttributes();
+         }
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error executing sql statement\n" + sql, e);
       }
    }
 
@@ -112,28 +117,33 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
     *
     * @@ Support fetching subset of rows
     */
-   public void fetch() throws SQLException {
+   public void fetch() {
       if (results == null) return;
       fetching = true;
       List<Object[]> tempRows = new ArrayList<Object[]>(fetchBatchSize);
       int lastRow = 0;
-      int columnCount = results.getMetaData().getColumnCount();
-      while (results != null && results.next()) {
-         Object[] row = new Object[columnCount];
-         for (int j = 0; j < columnCount; j++) {
-            row[j] = convertToDisplay(results, j + 1);
+      try {
+         int columnCount = results.getMetaData().getColumnCount();
+         while (results != null && results.next()) {
+            Object[] row = new Object[columnCount];
+            for (int j = 0; j < columnCount; j++) {
+               row[j] = convertToDisplay(results, j + 1);
+            }
+            tempRows.add(row);
+            if (tempRows.size() % fetchBatchSize == 0) {
+               addRows(tempRows, lastRow);
+               tempRows.clear();
+               lastRow = rows.size();
+               sleep(fetchSleepTime);
+            }
+            if (results == null) break;
          }
-         tempRows.add(row);
-         if (tempRows.size() % fetchBatchSize == 0) {
-            addRows(tempRows, lastRow);
-            tempRows.clear();
-            lastRow = rows.size();
-            sleep(fetchSleepTime);
-         }
-         if (results == null) break;
+         if (tempRows.size() > 0) addRows(tempRows, lastRow);
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error fetching query rows", e);
+      } finally {
+         fetching = false;
       }
-      if (tempRows.size() > 0) addRows(tempRows, lastRow);
-      fetching = false;
    }
 
    /**
@@ -178,15 +188,23 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    /**
     * Commit the current connection
     */
-   public void commit() throws SQLException {
-      if (connection != null) connection.commit();
+   public void commit() {
+      try {
+         if (connection != null) connection.commit();
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error committing transaction", e);
+      }
    }
 
    /**
     * Rollback the current connection
     */
-   public void rollback() throws SQLException {
-      if (connection != null) connection.rollback();
+   public void rollback() {
+      try {
+         if (connection != null) connection.rollback();
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error rolling back transaction", e);
+      }
    }
 
    /**
@@ -203,14 +221,14 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
          for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                Object value = table.getModel().getValueAt(i, j);
-               if ( value == null ) value="";
+               if (value == null) value = "";
                else if (value.toString().contains(",")) value = "\"" + value + "\"";
                out.write(value + (j == columns - 1 ? "" : ","));
             }
             out.newLine();
          }
       } catch (IOException e) {
-         throw new RuntimeException("Error exporting row",e);
+         throw new RuntimeException("Error exporting row", e);
       }
    }
 

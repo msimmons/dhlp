@@ -25,15 +25,16 @@ public class JDBCTable extends JDBCView {
    //
    // Constructors
    //
-   public JDBCTable(ResultSet row) throws SQLException {
+   public JDBCTable(ResultSet row) {
       super(row);
    }
 
    //
    // Methods
    //
-   public void addPrimaryKey(ResultSet rows) throws SQLException {
+   public void addPrimaryKey(ResultSet rows) {
       pk = new PrimaryKey();
+      try {
       while ( rows.next() ) {
          if (pk.name == null) pk.name = rows.getString(6);
          int sequence = rows.getInt(5);
@@ -43,14 +44,19 @@ public class JDBCTable extends JDBCView {
          while ( pk.columns.size() < sequence ) pk.columns.add(null);
          pk.columns.set(sequence-1, column);
       }
+      }
+      catch (SQLException e) {
+         throw new IllegalStateException("Error adding primary key to "+this, e);
+      }
    }
 
    public PrimaryKey getPrimaryKey() {
       return pk;
    }
    
-   public void addIndices(ResultSet rows) throws SQLException {
+   public void addIndices(ResultSet rows) {
       indices.clear();
+      try {
       while ( rows.next() ) {
          String name = rows.getString(6);
          if ( name == null ) continue;
@@ -63,34 +69,47 @@ public class JDBCTable extends JDBCView {
          }
          addIndexColumn(rows, i);
       }
+      }
+      catch (SQLException e) {
+         throw new IllegalStateException("Error adding indices to "+this, e);
+      }
    }
 
    public Collection<Index> getIndices() {
       return indices.values();
    }
    
-   private void addIndexColumn(ResultSet row, Index i) throws SQLException {
+   private void addIndexColumn(ResultSet row, Index i) {
+      try {
       String name = row.getString(9);
       Column column = columns.get(name);
       if ( column == null ) return;
       int sequence = row.getInt(8);
       while ( i.columns.size() < sequence ) i.columns.add(null);
       i.columns.set(sequence-1, column);
+      }
+      catch (SQLException e) {
+         throw new IllegalStateException("Error adding index column to "+i, e);
+      }
    }
    
-   public void addChildren(ResultSet rows) throws SQLException {
+   public void addChildren(ResultSet rows) {
       children.clear();
-      while ( rows.next() ) {
-         String name = rows.getString(12);
-         if ( name == null ) continue;
-         Constraint c = children.get(name);
-         if ( c == null ) {
-            c = new Constraint();
-            c.name = name;
-            c.table = rows.getString(7);
-            children.put(c.name, c);
+      try {
+         while ( rows.next() ) {
+            String name = rows.getString(12);
+            if ( name == null ) continue;
+            Constraint c = children.get(name);
+            if ( c == null ) {
+               c = new Constraint();
+               c.name = name;
+               c.table = rows.getString(7);
+               children.put(c.name, c);
+            }
+            addConstraintColumn(rows, c);
          }
-         addConstraintColumn(rows, c);
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error adding children to "+this, e);
       }
    }
 
@@ -98,19 +117,23 @@ public class JDBCTable extends JDBCView {
       return children.values();
    }
 
-   public void addParents(ResultSet rows) throws SQLException {
+   public void addParents(ResultSet rows) {
       parents.clear();
-      while ( rows.next() ) {
-         String name = rows.getString(12);
-         if ( name == null ) continue;
-         Constraint c = parents.get(name);
-         if ( c == null ) {
-            c = new Constraint();
-            c.name = name;
-            c.table = rows.getString(3);
-            parents.put(c.name, c);
+      try {
+         while ( rows.next() ) {
+            String name = rows.getString(12);
+            if ( name == null ) continue;
+            Constraint c = parents.get(name);
+            if ( c == null ) {
+               c = new Constraint();
+               c.name = name;
+               c.table = rows.getString(3);
+               parents.put(c.name, c);
+            }
+            addConstraintColumn(rows, c);
          }
-         addConstraintColumn(rows, c);
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error adding parents to "+this, e);
       }
    }
 
@@ -118,12 +141,17 @@ public class JDBCTable extends JDBCView {
       return parents.values();
    }
 
-   private void addConstraintColumn(ResultSet row, Constraint c) throws SQLException {
+   private void addConstraintColumn(ResultSet row, Constraint c) {
+      try {
       String column = row.getString(8);
       if ( column == null ) return;
       int sequence = row.getInt(9);
       while ( c.columns.size() < sequence ) c.columns.add(null);
       c.columns.set(sequence-1, column);
+      }
+      catch (SQLException e) {
+         throw new IllegalStateException("Error adding constraint column to "+c, e);
+      }
    }
    
    @Override

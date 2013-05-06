@@ -9,17 +9,17 @@ import java.util.*;
 import javax.swing.*;
 
 /**
-* Execute a query plan and display as a tree
-*/
+ * Execute a query plan and display as a tree
+ */
 public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
-   
+
    private String sql;
    private ConnectionPool pool;
    private JTree tree;
 
    /**
-   * Constructor to use connection pool
-   */
+    * Constructor to use connection pool
+    */
    public QueryPlanTreeModel(ConnectionPool pool, String sql) {
       super(null);
       initialize();
@@ -28,24 +28,45 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    }
 
    /**
-   * Return the tree component
-   */
-   public JTree getTree() { return tree; }
+    * Return the tree component
+    */
+   public JTree getTree() {
+      return tree;
+   }
 
-   public void execute() throws SQLException {
+   public void execute() {
       explain();
    }
 
-   public void fetch() throws SQLException {}
-   public void cancel() throws SQLException {}
-   public void close() throws SQLException {}
-   public void commit() throws SQLException {}
-   public void rollback() throws SQLException {}
-   public void export(BufferedWriter out) {}
+   public void fetch() {
+   }
 
-   public int getRowCount() { return 1; }
-   public String getAction() { return "query plan generated"; }
-   public String getOperation() { return "generating query plan"; }
+   public void cancel() {
+   }
+
+   public void close() {
+   }
+
+   public void commit() {
+   }
+
+   public void rollback() {
+   }
+
+   public void export(BufferedWriter out) {
+   }
+
+   public int getRowCount() {
+      return 1;
+   }
+
+   public String getAction() {
+      return "query plan generated";
+   }
+
+   public String getOperation() {
+      return "generating query plan";
+   }
 
    @Override
    public String getSql() {
@@ -53,17 +74,17 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
    }
 
    /**
-   * Initialize members
-   */
+    * Initialize members
+    */
    private void initialize() {
       tree = new JTree(this);
    }
 
    /**
-   * Run the query plan and create the tree model
-   */
-   private void explain() throws SQLException {
-      String explainString = "explain plan set statement_id='dhlp' into plan_table for "+sql;
+    * Run the query plan and create the tree model
+    */
+   private void explain() {
+      String explainString = "explain plan set statement_id='dhlp' into plan_table for " + sql;
       String planString = "select * from plan_table order by id, position";
       List<QueryPlanNode> nodes = new ArrayList<QueryPlanNode>();
       Connection db = null;
@@ -76,7 +97,7 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
          // Get the plan results
          PreparedStatement plan = db.prepareStatement(planString);
          ResultSet rows = plan.executeQuery();
-         while ( rows.next() ) {
+         while (rows.next()) {
             int id = rows.getInt("ID");
             int parentId = rows.getInt("PARENT_ID");
             String operation = rows.getString("OPERATION");
@@ -87,23 +108,24 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
             long bytes = rows.getLong("BYTES");
             QueryPlanNode node = new QueryPlanNode(operation, options, objectName, objectType, cost, bytes);
             nodes.add(node);
-            if ( id == parentId ) setRoot(node);
+            if (id == parentId) setRoot(node);
             else {
                QueryPlanNode parent = nodes.get(parentId);
                parent.add(node);
             }
          }
          plan.close();
-      }
-      finally {
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error explain execution plan for " + sql, e);
+      } finally {
          pool.returnConnection(db);
       }
-      
+
    }
 
    /**
-   * A node in the query plan tree
-   */
+    * A node in the query plan tree
+    */
    private class QueryPlanNode extends DefaultMutableTreeNode {
 
       private String operation;
@@ -114,15 +136,15 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
       private long bytes;
 
       /**
-      * This would be the root node
-      */
+       * This would be the root node
+       */
       QueryPlanNode() {
          super(true);
       }
 
       /**
-      * Construct a new query plan node with the given attributes
-      */
+       * Construct a new query plan node with the given attributes
+       */
       QueryPlanNode(String operation, String options, String objectName, String objectType, long cost, long bytes) {
          this.operation = operation;
          this.options = options;
@@ -135,9 +157,9 @@ public class QueryPlanTreeModel extends DefaultTreeModel implements SQLModel {
       @Override
       public String toString() {
          return operation + " " +
-            ((options==null) ? " " : options + " ") + 
-            ((objectName==null) ? " " : " ON " + objectType + " " + objectName + " ") + 
-            " (Cost=" + cost + "; Bytes=" + bytes + ")";
+               ((options == null) ? " " : options + " ") +
+               ((objectName == null) ? " " : " ON " + objectType + " " + objectName + " ") +
+               " (Cost=" + cost + "; Bytes=" + bytes + ")";
       }
 
    }

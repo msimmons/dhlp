@@ -6,59 +6,60 @@ import java.sql.*;
 import javax.swing.*;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.event.TreeExpansionEvent;
+
 import net.contrapt.dhlp.common.*;
 
 /**
-* Execute a sql statement and model the result set as a table.
-*/
+ * Execute a sql statement and model the result set as a table.
+ */
 public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, TreeWillExpandListener {
-   
+
    private JDBCObject object;
    private ConnectionPool pool;
    private JTree tree;
 
    /**
-   * Constructor to use connection pool
-   */
+    * Constructor to use connection pool
+    */
    public DescriptionTreeModel(ConnectionPool pool, JDBCObject object) {
       super(new DefaultMutableTreeNode(object, true));
       initialize();
       this.object = object;
       this.pool = pool;
    }
-   
+
    /**
-   * Excecute the sql statement for this table model
-   */
-   public void execute() throws SQLException {
-      if ( object == null ) return;
+    * Excecute the sql statement for this table model
+    */
+   public void execute() {
+      if (object == null) return;
       describe();
    }
-   
+
    /**
-   * Fetch the rows from the result set
-   */
-   public void fetch() throws SQLException {
+    * Fetch the rows from the result set
+    */
+   public void fetch() {
       // This is a no-op
    }
-   
+
    /**
-   * Cancel the current statement if possible
-   */
+    * Cancel the current statement if possible
+    */
    public void cancel() {
    }
 
    /**
-   * Commit the current connection
-   */
-   public void commit() throws SQLException {
+    * Commit the current connection
+    */
+   public void commit() {
       // noop
    }
 
    /**
-   * Rollback the current connection
-   */
-   public void rollback() throws SQLException {
+    * Rollback the current connection
+    */
+   public void rollback() {
       // noop
    }
 
@@ -66,33 +67,35 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
    }
 
    /**
-   * Close resources used by this model
-   */
-   public void close() throws SQLException {
+    * Close resources used by this model
+    */
+   public void close() {
       cancel();
    }
-   
+
    public int getRowCount() {
       return 1;
    }
-   
+
    /**
-   * Return the tree component
-   */
-   public JTree getTree() { return tree; }
-   
+    * Return the tree component
+    */
+   public JTree getTree() {
+      return tree;
+   }
+
    /**
-   * Return a string describing whether rows were selected or affected by DML
-   */
+    * Return a string describing whether rows were selected or affected by DML
+    */
    public String getAction() {
       return "object described";
    }
 
    /**
-   * Return a string describing the operation for error messages
-   */
+    * Return a string describing the operation for error messages
+    */
    public String getOperation() {
-      return "Describing "+object;
+      return "Describing " + object;
    }
 
    @Override
@@ -111,43 +114,43 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
    }
 
    /**
-   * Initialize members
-   */
+    * Initialize members
+    */
    private void initialize() {
       tree = new JTree(this);
    }
-   
+
    /**
-   * Get the description for the object and populate the tree model
-   */
-   private void describe() throws SQLException {
-      if ( object.isDescribed() ) return;
-      if ( object instanceof JDBCTable ) {
-         describeTable((JDBCTable)object);
-         createTree((JDBCTable)object);
+    * Get the description for the object and populate the tree model
+    */
+   private void describe() {
+      if (object.isDescribed()) return;
+      if (object instanceof JDBCTable) {
+         describeTable((JDBCTable) object);
+         createTree((JDBCTable) object);
       }
-      if ( object instanceof JDBCProcedure ) {
-         describeProcedure((JDBCProcedure)object);
-         createTree((JDBCProcedure)object);
+      if (object instanceof JDBCProcedure) {
+         describeProcedure((JDBCProcedure) object);
+         createTree((JDBCProcedure) object);
       }
    }
 
    /**
-   * Display table description in the tree
-   */
+    * Display table description in the tree
+    */
    private void createTree(JDBCTable table) {
-      DefaultMutableTreeNode root = (DefaultMutableTreeNode)getRoot();
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
       root.removeAllChildren();
       DefaultMutableTreeNode columns = new DefaultMutableTreeNode("Columns", true);
       DefaultMutableTreeNode key = new DefaultMutableTreeNode("Primary Key", true);
       DefaultMutableTreeNode indices = new DefaultMutableTreeNode("Indices", true);
       DefaultMutableTreeNode parents = new DefaultMutableTreeNode("Parents", true);
       DefaultMutableTreeNode children = new DefaultMutableTreeNode("Children", true);
-      for ( JDBCTable.Column c : table.getColumns() ) columns.add(new DefaultMutableTreeNode(c));
+      for (JDBCTable.Column c : table.getColumns()) columns.add(new DefaultMutableTreeNode(c));
       key.add(new DefaultMutableTreeNode(table.getPrimaryKey()));
-      for ( JDBCTable.Index i : table.getIndices() ) indices.add(new DefaultMutableTreeNode(i));
-      for ( JDBCTable.Constraint c : table.getChildren() ) children.add(new DefaultMutableTreeNode(c));
-      for ( JDBCTable.Constraint c : table.getParents() ) parents.add(new DefaultMutableTreeNode(c));
+      for (JDBCTable.Index i : table.getIndices()) indices.add(new DefaultMutableTreeNode(i));
+      for (JDBCTable.Constraint c : table.getChildren()) children.add(new DefaultMutableTreeNode(c));
+      for (JDBCTable.Constraint c : table.getParents()) parents.add(new DefaultMutableTreeNode(c));
       root.add(columns);
       root.add(key);
       root.add(indices);
@@ -156,20 +159,20 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
    }
 
    /**
-   * Display the procedure description as a tree
-   */
+    * Display the procedure description as a tree
+    */
    private void createTree(JDBCProcedure procedure) {
-      DefaultMutableTreeNode root = (DefaultMutableTreeNode)getRoot();
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
       root.removeAllChildren();
       DefaultMutableTreeNode parameters = new DefaultMutableTreeNode("Parameters", true);
-      for ( JDBCProcedure.Column c : procedure.getColumns() ) parameters.add(new DefaultMutableTreeNode(c));
+      for (JDBCProcedure.Column c : procedure.getColumns()) parameters.add(new DefaultMutableTreeNode(c));
       root.add(parameters);
    }
 
    /**
-   * Describe a table
-   */
-   private void describeTable(JDBCTable table) throws SQLException {
+    * Describe a table
+    */
+   private void describeTable(JDBCTable table) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -178,19 +181,18 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
          table.addColumns(results);
          results.close();
          // If its not a table, return here
-         if ( !table.getType().contains("TABLE") ) return;
+         if (!table.getType().contains("TABLE")) return;
          // Primary key columns
          results = db.getMetaData().getPrimaryKeys(table.getCatalog(), table.getSchema(), table.getName());
          table.addPrimaryKey(results);
          results.close();
          // Indexes
-         try { 
+         try {
             results = db.getMetaData().getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), false, false);
             table.addIndices(results);
             results.close();
-         }
-         catch (SQLException e) {
-            System.out.println("Error getting indices for "+table+": "+e);
+         } catch (SQLException e) {
+            System.out.println("Error getting indices for " + table + ": " + e);
          }
          // Child constraints
          results = db.getMetaData().getExportedKeys(table.getCatalog(), table.getSchema(), table.getName());
@@ -202,16 +204,17 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
          results.close();
          // That's it
          table.setDescribed();
-      }
-      finally {
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error describing table " + table, e);
+      } finally {
          pool.returnConnection(db);
       }
    }
 
    /**
-   * Describe a procedure
-   */
-   private void describeProcedure(JDBCProcedure procedure) throws SQLException {
+    * Describe a procedure
+    */
+   private void describeProcedure(JDBCProcedure procedure) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -221,8 +224,9 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
          results.close();
          // That's it
          procedure.setDescribed();
-      }
-      finally {
+      } catch (SQLException e) {
+         throw new IllegalStateException("Error describing procedure " + procedure, e);
+      } finally {
          pool.returnConnection(db);
       }
    }

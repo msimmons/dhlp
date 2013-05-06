@@ -65,13 +65,12 @@ public class DHLPController {
    /**
     * Read in the connection file
     */
-   public void load() throws DHLPException {
-      if (dhlpFile == null) throw new DHLPException("Cannot load with null file");
+   public void load() {
+      if (dhlpFile == null) throw new IllegalStateException("Cannot load with null file");
       try {
          dhlpData = BaseModel.readData(dhlpFile, ConfigurationData.class);
       } catch (Exception e) {
-         //throw new DHLPException("Error loading '"+dhlpFile+"': "+e.getMessage());
-         System.out.println(e);
+         System.err.println("Error loading " + dhlpFile + ": " + e);
       }
       if (dhlpData == null) dhlpData = new ConfigurationData();
       mapConnections();
@@ -80,13 +79,13 @@ public class DHLPController {
    /**
     * Write out the current connection file
     */
-   public void save() throws DHLPException {
-      if (dhlpFile == null) throw new DHLPException("Cannot save with null file");
-      if (dhlpData == null) throw new DHLPException("Configuration has not been loaded yet");
+   public void save() {
+      if (dhlpFile == null) throw new IllegalStateException("Cannot save with null file");
+      if (dhlpData == null) throw new IllegalStateException("Configuration has not been loaded yet");
       try {
          FileWriter out = new FileWriter(dhlpFile);
       } catch (Exception e) {
-         throw new DHLPException("Error saving '" + dhlpFile + "': " + e.getMessage());
+         throw new IllegalStateException("Error saving '" + dhlpFile + "': " + e.getMessage());
       }
    }
 
@@ -103,7 +102,7 @@ public class DHLPController {
       INSTANCE = null;
    }
 
-   public void describeObject(String connection, JDBCObject object) throws DHLPException {
+   public void describeObject(String connection, JDBCObject object) {
       if (object.isDescribed()) return;
       ConnectionPool pool = getPool(connection);
       if (object.getClass().equals(JDBCTable.class)) describeObject(pool, (JDBCTable) object);
@@ -144,7 +143,7 @@ public class DHLPController {
          for (String schema : pool.getSchema()) {
             String[] splits = schema.split("\\.");
             schema = splits[0];
-            String filter = splits.length==2 ? splits[1] : "%";
+            String filter = splits.length == 2 ? splits[1] : "%";
             // Tables, Views and Synonyms
             ResultSet results = db.getMetaData().getTables(schema, schema, filter, null);
             while (results.next()) {
@@ -161,7 +160,6 @@ public class DHLPController {
             results.close();
          }
       } catch (Exception e) {
-         //throw new DHLPException(e);
          System.err.println("Error loading object list for " + connection + ": " + e);
       } finally {
          try {
@@ -240,11 +238,12 @@ public class DHLPController {
    /**
     * Get a connection pool for the given connection name
     */
-   public ConnectionPool getPool(String name) throws DHLPException {
+   public ConnectionPool getPool(String name) {
       ConnectionData connectionData = getConnection(name);
-      if (connectionData == null) throw new DHLPException("No connection named '" + name + "' found");
+      if (connectionData == null) throw new IllegalStateException("No connection named '" + name + "' found");
       DriverData driverData = getDriver(connectionData.getDriver());
-      if (driverData == null) throw new DHLPException("No driver named '" + connectionData.getDriver() + "' found");
+      if (driverData == null)
+         throw new IllegalStateException("No driver named '" + connectionData.getDriver() + "' found");
       ConnectionPool pool = pools.get(name);
       if (pool == null) {
          if (!connectionData.isAutocommit()) connectionData.setAutocommit(dhlpData.isAutocommit());
@@ -257,7 +256,7 @@ public class DHLPController {
    /**
     * Describe a view
     */
-   public void describeObject(ConnectionPool pool, JDBCView view) throws DHLPException {
+   public void describeObject(ConnectionPool pool, JDBCView view) {
       describeColumns(pool, view);
       // TODO Get the text of the view; database specific
       view.setDescribed();
@@ -266,7 +265,7 @@ public class DHLPController {
    /**
     * Describe a synonym
     */
-   public void describeObject(ConnectionPool pool, JDBCSynonym synonym) throws DHLPException {
+   public void describeObject(ConnectionPool pool, JDBCSynonym synonym) {
       // TODO Resolve the synonym
       synonym.setDescribed();
    }
@@ -274,7 +273,7 @@ public class DHLPController {
    /**
     * Describe a table
     */
-   public void describeObject(ConnectionPool pool, JDBCTable table) throws DHLPException {
+   public void describeObject(ConnectionPool pool, JDBCTable table) {
       describeColumns(pool, table);
       describePrimaryKey(pool, table);
       describeIndices(pool, table);
@@ -286,7 +285,7 @@ public class DHLPController {
    /**
     * Describe a procedure
     */
-   public void describeObject(ConnectionPool pool, JDBCProcedure procedure) throws DHLPException {
+   public void describeObject(ConnectionPool pool, JDBCProcedure procedure) {
       describeParameters(pool, procedure);
       procedure.setDescribed();
    }
@@ -298,7 +297,7 @@ public class DHLPController {
       try {
          ConnectionPool pool = getPool(connection);
          describeColumns(pool, view);
-      } catch (DHLPException e) {
+      } catch (Exception e) {
          System.err.println("Error describing columns for " + view + ": " + e);
       }
    }
@@ -310,7 +309,7 @@ public class DHLPController {
       try {
          ConnectionPool pool = getPool(connection);
          describePrimaryKey(pool, table);
-      } catch (DHLPException e) {
+      } catch (Exception e) {
          System.err.println("Error describing primary key for " + table + ": " + e);
       }
    }
@@ -322,7 +321,7 @@ public class DHLPController {
       try {
          ConnectionPool pool = getPool(connection);
          describeIndices(pool, table);
-      } catch (DHLPException e) {
+      } catch (Exception e) {
          System.err.println("Error describing indices for " + table + ": " + e);
       }
    }
@@ -334,7 +333,7 @@ public class DHLPController {
       try {
          ConnectionPool pool = getPool(connection);
          describeChildren(pool, table);
-      } catch (DHLPException e) {
+      } catch (Exception e) {
          System.err.println("Error describing children for " + table + ": " + e);
       }
    }
@@ -346,7 +345,7 @@ public class DHLPController {
       try {
          ConnectionPool pool = getPool(connection);
          describeParents(pool, table);
-      } catch (DHLPException e) {
+      } catch (Exception e) {
          System.err.println("Error describing parents for " + table + ": " + e);
       }
    }
@@ -358,7 +357,7 @@ public class DHLPController {
       try {
          ConnectionPool pool = getPool(connection);
          describeParameters(pool, procedure);
-      } catch (DHLPException e) {
+      } catch (Exception e) {
          System.err.println("Error describing parameters for " + procedure + ": " + e);
       }
    }
@@ -366,7 +365,7 @@ public class DHLPController {
    /**
     * Describe the columns of a table
     */
-   public void describeColumns(ConnectionPool pool, JDBCView table) throws DHLPException {
+   public void describeColumns(ConnectionPool pool, JDBCView table) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -376,7 +375,7 @@ public class DHLPController {
          results.close();
       } catch (Exception e) {
          e.printStackTrace();
-         throw new DHLPException("Error describing columns for " + table + ": " + e);
+         throw new IllegalStateException("Error describing columns for " + table, e);
       } finally {
          pool.returnConnection(db);
       }
@@ -385,7 +384,7 @@ public class DHLPController {
    /**
     * Describe the primary keys of a table
     */
-   public void describePrimaryKey(ConnectionPool pool, JDBCTable table) throws DHLPException {
+   public void describePrimaryKey(ConnectionPool pool, JDBCTable table) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -395,7 +394,7 @@ public class DHLPController {
          results.close();
       } catch (Exception e) {
          e.printStackTrace();
-         throw new DHLPException("Error describing columns for " + table + ": " + e);
+         throw new IllegalStateException("Error describing columns for " + table, e);
       } finally {
          pool.returnConnection(db);
       }
@@ -404,7 +403,7 @@ public class DHLPController {
    /**
     * Describe the indices of a table
     */
-   public void describeIndices(ConnectionPool pool, JDBCTable table) throws DHLPException {
+   public void describeIndices(ConnectionPool pool, JDBCTable table) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -412,7 +411,7 @@ public class DHLPController {
          ResultSet results = db.getMetaData().getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), false, false);
          table.addIndices(results);
          results.close();
-      } catch (SQLException e) {
+      } catch (Exception e) {
          System.out.println("Error getting indices for " + table + ": " + e);
       } finally {
          pool.returnConnection(db);
@@ -422,7 +421,7 @@ public class DHLPController {
    /**
     * Describe the child references of a table
     */
-   public void describeChildren(ConnectionPool pool, JDBCTable table) throws DHLPException {
+   public void describeChildren(ConnectionPool pool, JDBCTable table) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -432,7 +431,7 @@ public class DHLPController {
          results.close();
       } catch (Exception e) {
          e.printStackTrace();
-         throw new DHLPException("Error describing table " + table + ": " + e);
+         throw new IllegalStateException("Error describing table " + table, e);
       } finally {
          pool.returnConnection(db);
       }
@@ -441,7 +440,7 @@ public class DHLPController {
    /**
     * Describe the parent references to a table
     */
-   public void describeParents(ConnectionPool pool, JDBCTable table) throws DHLPException {
+   public void describeParents(ConnectionPool pool, JDBCTable table) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -451,7 +450,7 @@ public class DHLPController {
          results.close();
       } catch (Exception e) {
          e.printStackTrace();
-         throw new DHLPException("Error describing table " + table + ": " + e);
+         throw new IllegalStateException("Error describing table " + table, e);
       } finally {
          pool.returnConnection(db);
       }
@@ -460,7 +459,7 @@ public class DHLPController {
    /**
     * Describe the parameters of a procedure
     */
-   private void describeParameters(ConnectionPool pool, JDBCProcedure procedure) throws DHLPException {
+   private void describeParameters(ConnectionPool pool, JDBCProcedure procedure) {
       Connection db = null;
       try {
          db = pool.takeConnection();
@@ -472,7 +471,7 @@ public class DHLPController {
          procedure.setDescribed();
       } catch (Exception e) {
          e.printStackTrace();
-         throw new DHLPException("Error describing procedure " + procedure + ": " + e);
+         throw new IllegalStateException("Error describing procedure " + procedure, e);
       } finally {
          pool.returnConnection(db);
       }

@@ -8,12 +8,12 @@ import java.sql.SQLException;
 */
 public interface SQLModel {
 
-   public void execute() throws SQLException;
-   public void fetch() throws SQLException;
-   public void cancel() throws SQLException;
-   public void close() throws SQLException;
-   public void commit() throws SQLException;
-   public void rollback() throws SQLException;
+   public void execute();
+   public void fetch();
+   public void cancel();
+   public void close();
+   public void commit();
+   public void rollback();
    public void export(BufferedWriter out);
    public int getRowCount();
    public String getAction();

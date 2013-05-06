@@ -12,25 +12,25 @@
 
     <ACTION NAME="dhlp-sql">
         <CODE>
-           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.SQL);
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().execSql(view);
         </CODE>
     </ACTION>
 
     <ACTION NAME="dhlp-plan">
         <CODE>
-           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.PLAN);
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().generateQueryPlan(view);
         </CODE>
     </ACTION>
 
     <ACTION NAME="dhlp-find">
        <CODE>
-          net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.FIND);
+          net.contrapt.dhlp.jedit.DHLPlugin.getInstance().findObjects(view);
        </CODE>
     </ACTION>
 
     <ACTION NAME="dhlp-describe">
         <CODE>
-           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().performAction(view, net.contrapt.dhlp.jedit.DHLPlugin.Action.DESCRIBE);
+           net.contrapt.dhlp.jedit.DHLPlugin.getInstance().describeObject(view);
         </CODE>
     </ACTION>
 

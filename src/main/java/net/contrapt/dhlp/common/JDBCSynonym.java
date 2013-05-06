@@ -21,7 +21,7 @@ public class JDBCSynonym extends JDBCTable {
    //
    // Constructors
    //
-   public JDBCSynonym(ResultSet row) throws SQLException {
+   public JDBCSynonym(ResultSet row) {
       super(row);
    }
 

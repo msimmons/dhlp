@@ -178,7 +178,7 @@ public abstract class SQLPanel extends JPanel {
          executionCount++;
          displayExecutionStatus();
          doFetch();
-      } catch (SQLException e) {
+      } catch (Exception e) {
          statusText.setText("Error executing statement");
          displayError(e);
       }
@@ -192,7 +192,7 @@ public abstract class SQLPanel extends JPanel {
          statusText.setText("Fetching...");
          getModel().fetch();
          displayExecutionStatus();
-      } catch (SQLException e) {
+      } catch (Exception e) {
          statusText.setText("Error fetching rows: " + e);
          //displayError(e);
       }
@@ -206,7 +206,7 @@ public abstract class SQLPanel extends JPanel {
          statusText.setText("Cancelling...");
          getModel().cancel();
          statusText.setText("Cancelled");
-      } catch (SQLException e) {
+      } catch (Exception e) {
          statusText.setText("Error cancelling statement");
          displayError(e);
       }
@@ -220,7 +220,7 @@ public abstract class SQLPanel extends JPanel {
          statusText.setText("Closing...");
          getModel().close();
          statusText.setText("Closed");
-      } catch (SQLException e) {
+      } catch (Exception e) {
          statusText.setText("Error closing model");
          displayError(e);
          System.err.println(getClass() + ".doClose(): " + e);
@@ -235,7 +235,7 @@ public abstract class SQLPanel extends JPanel {
          statusText.setText("Committing...");
          getModel().commit();
          statusText.setText("Committed");
-      } catch (SQLException e) {
+      } catch (Exception e) {
          statusText.setText("Error committing transaction");
          displayError(e);
       }
@@ -249,7 +249,7 @@ public abstract class SQLPanel extends JPanel {
          statusText.setText("Rolling back...");
          getModel().rollback();
          statusText.setText("Rolled back");
-      } catch (SQLException e) {
+      } catch (Exception e) {
          statusText.setText("Error rolling back transaction");
          displayError(e);
       }
@@ -282,9 +282,9 @@ public abstract class SQLPanel extends JPanel {
    /**
     * Display an execution error
     */
-   private void displayError(SQLException e) {
+   private void displayError(Exception e) {
       remove(resultPanel);
-      JTextArea error = new JTextArea(getExceptionString(e)+ "\n\nOperation:\n" + getModel().getOperation());
+      JTextArea error = new JTextArea(getExceptionString(e) + "\n\nOperation:\n" + getModel().getOperation());
       JScrollPane pane = new JScrollPane(error);
       pane.setAutoscrolls(true);
       error.setEditable(false);
@@ -292,12 +292,11 @@ public abstract class SQLPanel extends JPanel {
       revalidate();
    }
 
-   private String getExceptionString(SQLException e) {
-      StringBuilder msg = new StringBuilder("SQLException: "+e.getMessage());
-      if ( e.getNextException() != null ) msg.append("\n   "+e.getNextException());
+   private String getExceptionString(Exception e) {
+      StringBuilder msg = new StringBuilder("SQLException: " + e.getMessage());
       Throwable c = e.getCause();
-      while ( c != null ) {
-         msg.append("\n      "+c);
+      while (c != null) {
+         msg.append("\n      " + c);
          c = c.getCause();
       }
       return msg.toString();

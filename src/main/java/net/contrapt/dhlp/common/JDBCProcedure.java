@@ -22,20 +22,16 @@ public class JDBCProcedure extends JDBCObject {
    //
    // Constructors
    //
-   public JDBCProcedure(ResultSet row) throws SQLException {
-      super(
-         row.getString(CATALOG_COLUMN),
-         row.getString(SCHEMA_COLUMN),
-         row.getString(NAME_COLUMN),
-         "PROCEDURE"
-      );
+   public JDBCProcedure(ResultSet row) {
+      super(row, "PROCEDURE");
    }
 
    //
    // Methods
    //
-   public void addColumns(ResultSet rows) throws SQLException {
+   public void addColumns(ResultSet rows) {
       columns.clear();
+      try {
       while ( rows.next() ) {
          Column c = new Column();
          c.name = rows.getString(4);
@@ -66,6 +62,10 @@ public class JDBCProcedure extends JDBCObject {
          else if ( rows.getInt(12) == DatabaseMetaData.procedureNullable ) c.nullable = false;
          else c.nullable = false;
          columns.add(c);
+      }
+      }
+      catch (SQLException e) {
+         throw new IllegalStateException("Error adding columns to "+this, e);
       }
    }
 

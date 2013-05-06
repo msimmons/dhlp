@@ -22,10 +22,10 @@ dhlp-describe.label=Describe Object
 # Labels and Messages for use in dialogs
 #
 plugin.dhlp.reinit-error.title=Reloading Configuration
-plugin.dhlp.reinit-error.message=Error reinitializing DHLP from {0}\n{1}
+plugin.dhlp.reinit-error.message=Error reinitializing DHLP from {0}\\n{1}
 
-plugin.dhlp.exec-sql-error.title=Executing SQL
-plugin.dhlp.exec-sql-error.message=Error executing SQL statement\n{0}
+plugin.dhlp.exec-action-error.title=Executing Action
+plugin.dhlp.exec-action-error.message=Error executing {0}\n\n{1}
 
 #
 # Dockable properties

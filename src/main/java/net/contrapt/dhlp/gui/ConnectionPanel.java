@@ -33,7 +33,7 @@ public class ConnectionPanel extends PluginPanel {
    * Return the connection name
    */
    public String getName() {
-      return pool.getUser()+" @ "+pool.getURL();
+      return pool.getUser()+" @ "+pool.getURL()+" [limit="+pool.getFetchLimit()+"]";
    }
 
    /**

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public interface SQLModel {
 
    public void execute();
-   public void fetch();
+   public void fetch(boolean limited);
    public void cancel();
    public void close();
    public void commit();

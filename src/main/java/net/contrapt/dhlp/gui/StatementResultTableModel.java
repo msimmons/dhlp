@@ -87,7 +87,7 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
    public void execute() {
       if (sql == null) return;
       connection = connection == null ? pool.takeConnection() : connection;
-      if (connection == null) throw new IllegalStateException("Error getting connect for " + pool.getURL());
+      if (connection == null) throw new IllegalStateException("Error connecting to " + pool.getURL());
       try {
          if (statement == null) statement = connection.prepareStatement(sql);
          if (rows == null) rows = new ArrayList<Object[]>();
@@ -114,10 +114,8 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
 
    /**
     * Fetch the rows from the result set
-    *
-    * @@ Support fetching subset of rows
     */
-   public void fetch() {
+   public void fetch(boolean limited) {
       if (results == null) return;
       fetching = true;
       List<Object[]> tempRows = new ArrayList<Object[]>(fetchBatchSize);
@@ -130,7 +128,12 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
                row[j] = convertToDisplay(results, j + 1);
             }
             tempRows.add(row);
-            if (tempRows.size() % fetchBatchSize == 0) {
+            if ( limited && tempRows.size() == pool.getFetchLimit() ) {
+               addRows(tempRows, lastRow);
+               tempRows.clear();
+               return;
+            }
+            else if (tempRows.size() % fetchBatchSize == 0) {
                addRows(tempRows, lastRow);
                tempRows.clear();
                lastRow = rows.size();
@@ -323,7 +326,7 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
     * Return a string describing whether rows were selected or affected by DML
     */
    public String getAction() {
-      return getRowCount() + " " + getRowString() + ((updateCount >= 0) ? " affected" : " retrieved");
+      return getRowCount() + " " + getRowString() + ((updateCount >= 0) ? " affected" : " retrieved"+getHasMoreText());
    }
 
    /**
@@ -359,6 +362,15 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
       int rows = getRowCount();
       if (rows == 1) return "row";
       else return "rows";
+   }
+
+   private String getHasMoreText() {
+      try {
+         return results.next() ? " (more available...)" : "";
+      }
+      catch (Exception e) {
+         return "";
+      }
    }
 
    /**

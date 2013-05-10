@@ -39,7 +39,7 @@ public class DescriptionTreeModel extends DefaultTreeModel implements SQLModel, 
    /**
     * Fetch the rows from the result set
     */
-   public void fetch() {
+   public void fetch(boolean limited) {
       // This is a no-op
    }
 

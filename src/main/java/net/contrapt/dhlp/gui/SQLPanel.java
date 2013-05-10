@@ -21,6 +21,7 @@ public abstract class SQLPanel extends JPanel {
    private int executionCount;
    private long executionTime;
    private boolean pinned = false;
+   private boolean limited = true;
 
    private JScrollPane resultPanel;
    private JPanel statusPanel;
@@ -31,6 +32,10 @@ public abstract class SQLPanel extends JPanel {
 
    public boolean isPinned() {
       return pinned;
+   }
+
+   public boolean isLimited() {
+      return limited;
    }
 
    /**
@@ -156,10 +161,15 @@ public abstract class SQLPanel extends JPanel {
       statusText = new JTextField("", 60);
       statusText.setEditable(false);
       JCheckBox pinnedBox = new JCheckBox(PinnedAction);
+      JCheckBox limitedBox = new JCheckBox(LimitedAction);
+      limitedBox.setSelected(limited);
       statusPanel = new JPanel();
       statusPanel.setLayout(new BorderLayout());
       statusPanel.add(statusText, BorderLayout.WEST);
-      statusPanel.add(pinnedBox, BorderLayout.EAST);
+      JPanel boxPanel = new JPanel();
+      boxPanel.add(pinnedBox);
+      boxPanel.add(limitedBox);
+      statusPanel.add(boxPanel, BorderLayout.EAST);
       // Put them all together on the content pane
       setLayout(new BorderLayout());
       add(resultPanel, BorderLayout.CENTER);
@@ -190,7 +200,7 @@ public abstract class SQLPanel extends JPanel {
    private void doFetch() {
       try {
          statusText.setText("Fetching...");
-         getModel().fetch();
+         getModel().fetch(limited);
          displayExecutionStatus();
       } catch (Exception e) {
          statusText.setText("Error fetching rows: " + e);
@@ -315,6 +325,12 @@ public abstract class SQLPanel extends JPanel {
    private Action PinnedAction = new AbstractAction("Pin?") {
       public void actionPerformed(ActionEvent e) {
          pinned = !pinned;
+      }
+   };
+
+   private Action LimitedAction = new AbstractAction("Limit?") {
+      public void actionPerformed(ActionEvent e) {
+         limited = !limited;
       }
    };
 

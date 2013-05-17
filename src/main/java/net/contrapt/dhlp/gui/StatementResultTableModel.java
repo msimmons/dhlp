@@ -366,7 +366,7 @@ public class StatementResultTableModel extends AbstractTableModel implements SQL
 
    private String getHasMoreText() {
       try {
-         return results.next() ? " (more available...)" : "";
+         return !results.isAfterLast() ? "...more available" : "";
       }
       catch (Exception e) {
          return "";

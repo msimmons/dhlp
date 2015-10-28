@@ -2,48 +2,53 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 ext {
-   releaseVersion="2.0.0"
-   snapshotVersion="$releaseVersion-SNAPSHOT"
+    releaseVersion = "2.1.0"
+    snapshotVersion = "$releaseVersion-SNAPSHOT"
 }
 
 group = "net.contrapt"
 version = hasProperty("release") ? releaseVersion : snapshotVersion;
 
 repositories {
-   mavenCentral()
-   mavenLocal()
+    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-   compile files("$jeditHome/jedit.jar"),
-         "org.codehaus.jackson:jackson-jaxrs:1.8.4",
-         "commons-lang:commons-lang:2.4",
-         "net.contrapt:jeditutil:2.0.0"
+    compile files("$jeditHome/jedit.jar")
+    compile("org.codehaus.jackson:jackson-jaxrs:1.8.4")
+    compile("commons-lang:commons-lang:2.4")
+    compile("net.contrapt:jeditutil:2.0.0")
+    compile('com.jcraft:jsch:0.1.53')
 
-   testCompile "org.testng:testng:6.8.1"
+    testCompile "org.testng:testng:6.8.1"
 }
 
 processResources {
-   expand(project.properties)
+    expand(project.properties)
 }
 
 test {
-   systemProperty "testDataDir", "$buildDir/resources/test/data"
-   testLogging.showStandardStreams = true
-   useTestNG() {
-      excludeGroups 'gui'
-   }
+    systemProperty "testDataDir", "$buildDir/resources/test/data"
+    testLogging.showStandardStreams = true
+    useTestNG() {
+        excludeGroups 'gui'
+    }
 }
 
 task guiTest(type: Test) {
-   testLogging.showStandardStreams = true
-   useTestNG() {
-      includeGroups 'gui'
-   }
+    testLogging.showStandardStreams = true
+    useTestNG() {
+        includeGroups 'gui'
+    }
 }
 
-task deployPlugin(type:Copy, dependsOn: build, description:"Copy the plugin jar to the local jedit installation as defined in your settings") {
-   def jarFile="$buildDir/libs/${project.name}-${project.version}.jar"
-   from(jarFile)
-   into("$jeditUser/jars")
+task deployPlugin(type: Copy, dependsOn: build, description: "Copy the plugin jar to the local jedit installation as defined in your settings") {
+    def jarFile = "$buildDir/libs/${project.name}-${project.version}.jar"
+    from(jarFile)
+    into("$jeditUser/jars")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.8'
 }

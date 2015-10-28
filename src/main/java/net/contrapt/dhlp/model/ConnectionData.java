@@ -7,64 +7,123 @@ import java.util.List;
 
 public class ConnectionData extends BaseModel {
 
-   @JsonProperty
-   private String name;
+    @JsonProperty
+    private String name;
 
-   @JsonProperty
-   private String driver;
+    @JsonProperty
+    private String driver;
 
-   @JsonProperty
-   private String url;
+    @JsonProperty
+    private String url;
 
-   @JsonProperty
-   private String user;
+    @JsonProperty
+    private String user;
 
-   @JsonProperty
-   private String password;
+    @JsonProperty
+    private String password;
 
-   @JsonProperty
-   private boolean autocommit = false;
+    @JsonProperty
+    private String sshHost;
 
-   @JsonProperty
-   private int fetchLimit;
+    @JsonProperty
+    private String sshUser;
 
-   @JsonProperty
-   private List<String> schema;
+    @JsonProperty
+    private String sshPassword;
 
-   public String getDriver() {
-      return driver;
-   }
+    @JsonProperty
+    private String sshKeyFile;
 
-   public int getFetchLimit() {
-      return fetchLimit;
-   }
+    @JsonProperty
+    private Integer sshLocalPort;
 
-   public String getName() {
-      return name;
-   }
+    @JsonProperty
+    private String sshRemoteHost;
 
-   public String getPassword() {
-      return password;
-   }
+    @JsonProperty
+    private Integer sshRemotePort;
 
-   public List<String> getSchema() {
-      return schema;
-   }
+    @JsonProperty
+    private String sshPassphrase;
 
-   public String getUrl() {
-      return url;
-   }
+    @JsonProperty
+    private boolean autocommit = false;
 
-   public String getUser() {
-      return user;
-   }
+    @JsonProperty
+    private int fetchLimit;
 
-   public boolean isAutocommit() {
-      return autocommit;
-   }
+    @JsonProperty
+    private List<String> schema;
 
-   public void setAutocommit(boolean autocommit) {
-      this.autocommit = autocommit;
-   }
+    public String getDriver() {
+        return driver;
+    }
 
+    public int getFetchLimit() {
+        return fetchLimit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public List<String> getSchema() {
+        return schema;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public boolean isAutocommit() {
+        return autocommit;
+    }
+
+    public void setAutocommit(boolean autocommit) {
+        this.autocommit = autocommit;
+    }
+
+    public String getSshHost() {
+        return sshHost;
+    }
+
+    public String getSshUser() {
+        return sshUser;
+    }
+
+    public String getSshPassword() {
+        return sshPassword;
+    }
+
+    public String getSshKeyFile() {
+        return sshKeyFile;
+    }
+
+    public Integer getSshLocalPort() {
+        return sshLocalPort;
+    }
+
+    public String getSshRemoteHost() {
+        return sshRemoteHost;
+    }
+
+    public Integer getSshRemotePort() {
+        return sshRemotePort;
+    }
+
+    public String getSshPassphrase() {
+        return sshPassphrase;
+    }
+
+    public boolean isSsh() {
+        return sshHost != null;
+    }
 }
